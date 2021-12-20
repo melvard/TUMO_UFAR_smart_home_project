@@ -222,6 +222,8 @@ def is_password_correct(pswd):
     default_pass = "123567"
     return pswd == default_pass
 
+
+
 def start():
 
     sensorReadThread.start()
@@ -275,6 +277,9 @@ def start():
             else:
                 password = ""
         # end keypad checking
+
+start_thread = threading.Thread(target=start)
+start_thread.start()
 
 
 # if __name__ == "__main__":

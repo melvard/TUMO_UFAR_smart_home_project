@@ -7,11 +7,13 @@
 
 from subprocess import Popen, PIPE, check_output
 import threading
-import sys
 import time
+import sys
+
 import _1_7_stepperMotor_AndrianaMkrtchyan_demo as StepperMotor
 import _1_12_lcd1602_TaronPetrosyan_demo as LCD_Display
 
+interpreter = sys.executable
 door_is_open = False
 heating_is_on= False
 watering_is_on = False
@@ -208,7 +210,9 @@ def read_sensors_data():
                     data_turn = 1
                 if password_unlocked:  # as password unlocked the LCD display will show data
                     message = f"LCD : {sensor}: {measurements[sensor]}"
-                    LCD_Display.show_message_on_display(bcolors.OKGREEN + message + bcolors.ENDC)
+                    LCD_Display.send_message(bcolors.OKGREEN + message + bcolors.ENDC)
+                # else:
+                #     LCD_Display.clear_display()
         print()
         passed_iterations_LCD += 1
         control_sensors()
@@ -233,20 +237,20 @@ def start():
 
     # here we are running only the demo versions of sensors, remove '_demo' part to run original files
 
-    AirPressure = Popen(['python3', '_1_1_bmp280_VarantsAvetisyan_demo.py'])
-    Temperature = Popen(['python3', '_1_2_ds18b20_AregPapyan_demo.py'])
-    HumidityTemperature1 = Popen(['python3', '_1_3_htu21_AgnesaMartirosyan_demo.py'])
-    HumidityTemperature2 = Popen(['python3', '_1_4_hpu21_MilenaArakelyan_demo.py'])
-    HumidityTemperature3 = Popen(['python3', '_1_5_htu21_VaheKhlghatyan_demo.py'])
-    GyroscopeAccelerometer1 = Popen(['python3', '_1_6_gy521_mpu6050_AnnaVarosyan_demo.py'])
-    AirQualitySensor = Popen(['python3', '_1_8_ccs811_ManeVarosyan_demo.py'])
-    Keypad = Popen(['python3', '_1_9_keypad_HaykBadalyan_demo.py'], stdout=PIPE, shell=False)
-    Vibration = Popen(['python3', '_1_10_sw420_aht801s_DianaMkrtchyan_demo.py'])
-    FlowMeter = Popen(['python3', '_1_11_flowMeter_Sergey_Boyakhchyan_demo.py'])
-    LCDDisplay = Popen(['python3', '_1_12_lcd1602_TaronPetrosyan_demo.py'])
-    CurrentMeasureSensor = Popen(['python3', '_2_1_acs712_Arman_Azizyan_demo.py'])
-    GyroscopeAccelerometer2 = Popen(['python3', '_2_2_gy521_mpu6050_AniMarkosyan_demo.py'])
-    Accelerometer = Popen(['python3', '_2_3_adxl335__AstghikBoyajyan_demo.py'])
+    AirPressure = Popen([interpreter, '_1_1_bmp280_VarantsAvetisyan_demo.py'])
+    Temperature = Popen([interpreter, '_1_2_ds18b20_AregPapyan_demo.py'])
+    HumidityTemperature1 = Popen([interpreter, '_1_3_htu21_AgnesaMartirosyan_demo.py'])
+    HumidityTemperature2 = Popen([interpreter, '_1_4_hpu21_MilenaArakelyan_demo.py'])
+    HumidityTemperature3 = Popen([interpreter, '_1_5_htu21_VaheKhlghatyan_demo.py'])
+    GyroscopeAccelerometer1 = Popen([interpreter, '_1_6_gy521_mpu6050_AnnaVarosyan_demo.py'])
+    AirQualitySensor = Popen([interpreter, '_1_8_ccs811_ManeVarosyan_demo.py'])
+    Keypad = Popen([interpreter, '_1_9_keypad_HaykBadalyan_demo.py'], stdout=PIPE, shell=False)
+    Vibration = Popen([interpreter, '_1_10_sw420_aht801s_DianaMkrtchyan_demo.py'])
+    FlowMeter = Popen([interpreter, '_1_11_flowMeter_Sergey_Boyakhchyan_demo.py'])
+    LCDDisplay = Popen([interpreter, '_1_12_lcd1602_TaronPetrosyan_demo.py'])
+    CurrentMeasureSensor = Popen([interpreter, '_2_1_acs712_Arman_Azizyan_demo.py'])
+    GyroscopeAccelerometer2 = Popen([interpreter, '_2_2_gy521_mpu6050_AniMarkosyan_demo.py'])
+    Accelerometer = Popen([interpreter, '_2_3_adxl335__AstghikBoyajyan_demo.py'])
 
     global password
     global password_unlocked
@@ -257,17 +261,11 @@ def start():
         if keyPressed:
             if keyPressed not in ['A', 'B']:
                 if keyPressed == 'C':
-                    # close door
                     password_unlocked = False
-                    # if door_is_open:
-                    #     StepperMotor.close_door("1/4")
                 elif keyPressed == 'D':
-                    # try to open the door with inserted password
                     if is_password_correct(password):
                         print(bcolors.OKGREEN+"Correct Password"+bcolors.ENDC)
                         password_unlocked = True
-                        # if not door_is_open:
-                        #     StepperMotor.open_door("1/4")
                     else:
                         print(bcolors.FAIL +"Wrong door password"+bcolors.ENDC)
                     password = ""
@@ -280,10 +278,3 @@ def start():
 
 start_thread = threading.Thread(target=start)
 start_thread.start()
-
-
-# if __name__ == "__main__":
-#     try:
-#         start()
-#     except KeyboardInterrupt:
-#         sys.exit()
